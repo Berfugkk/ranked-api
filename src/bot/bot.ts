@@ -16,7 +16,7 @@ client.on("interactionCreate", async (interaction) => {
 
     if (interaction.commandName === "leaderboard") {
         try {
-            const res = await fetch("http://localhost:3000/leaderboard");
+            const res = await fetch("https://ranked-api-3r6m.onrender.com/");
             const data = await res.json();
 
             if (!data.length) {
