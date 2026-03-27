@@ -16,24 +16,28 @@ client.on("interactionCreate", async (interaction) => {
 
     if (interaction.commandName === "leaderboard") {
         try {
-            const res = await fetch("https://ranked-api-3r6m.onrender.com/");
-            const data = await res.json();
+  const res = await fetch("https://ranked-api-3r6m.onrender.com/leaderboard");
 
-            if (!data.length) {
-                return interaction.reply("Leaderboard vazio.");
-            }
+  if (!res.ok) {
+    console.log("HTTP ERROR:", res.status);
+    return interaction.reply("Erro ao buscar leaderboard.");
+  }
 
-            let text = "🏆 Leaderboard:\n\n";
+  const data = await res.json();
 
-            data.forEach((p: any, i: number) => {
-                text += `${i + 1}. ${p.username} — ${p.elo}\n`;
-            });
+  if (!data || data.length === 0) {
+    return interaction.reply("Leaderboard vazio.");
+  }
 
-            await interaction.reply(text);
-        } catch (err) {
-            console.error(err);
-            await interaction.reply("Erro ao buscar leaderboard.");
-        }
+  const text = data
+    .map((p: any, i: number) => `${i + 1}. ${p.username} - ${p.elo}`)
+    .join("\n");
+
+  await interaction.reply(`🏆 Leaderboard:\n${text}`);
+} catch (err) {
+  console.error("FETCH ERROR:", err);
+  await interaction.reply("Erro ao buscar leaderboard.");
+}
     }
 });
 
