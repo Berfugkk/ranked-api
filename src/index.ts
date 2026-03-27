@@ -131,13 +131,16 @@ app.post("/set-elo", checkApiKey, async (req, res) => {
 
     const { data, error } = await supabase
       .from("players")
-      .upsert([
-        {
-          roblox_id: robloxIdStr,
-          username: usernameStr,
-          elo: eloNum,
-        },
-      ])
+      .upsert(
+        [
+          {
+            roblox_id: robloxIdStr,
+            username: usernameStr,
+            elo: eloNum,
+          },
+        ],
+        { onConflict: "roblox_id" }
+      )
       .select();
 
     if (error) {
